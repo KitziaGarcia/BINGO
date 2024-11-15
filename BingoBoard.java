@@ -3,7 +3,6 @@ import java.util.Random;
 
 public class BingoBoard extends Board {
     private ArrayList<ArrayList<Integer>> numbers;
-    int number;
 
     public BingoBoard(int number) {
         initializeNumbers();

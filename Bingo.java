@@ -1,11 +1,11 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Bingo {
     private WinningPattern selectedPattern;
     private ArrayList<Integer> usedNumbers;
-
+    private BingoCage cage;
 
     public void test() {
         usedNumbers = new ArrayList<>(Arrays.asList(1, 16, 2, 17, 3));
@@ -15,6 +15,22 @@ public class Bingo {
 
         pattern.setPositionsToCheck(1, usedNumbers, board.getCells());
     }
+
+    public Bingo(WinningPattern selectedPattern) {
+        this.selectedPattern = selectedPattern;
+        cage = new BingoCage();
+        getBall();
+    }
+
+    public BingoBall getBall() {
+        int randomIndex;
+        BingoBall selectedBall = new BingoBall();
+        randomIndex = new Random().nextInt(cage.getBalls().size());
+        selectedBall = cage.getBalls().get(randomIndex);
+        cage.removeBall(selectedBall);
+        return selectedBall;
+    }
+
 
     public void selectPattern(int choice) {
         switch (choice) {
@@ -42,4 +58,6 @@ public class Bingo {
     public void setSelectedPattern(WinningPattern selectedPattern) {
         this.selectedPattern = selectedPattern;
     }
+
+
 }
