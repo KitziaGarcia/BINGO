@@ -1,11 +1,18 @@
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class SmallCenterBoxPattern implements WinningPattern {
-    private final int patternIndicator;
+    private final int typeOfPatternIndicator;
     private ArrayList<Integer> lineToCheck;
+    private int combinationIndicator;
+    private ImageIcon image;
+    private String name;
 
-    public SmallCenterBoxPattern() {
-        this.patternIndicator = 4;
+    public SmallCenterBoxPattern(int combinationIndicator, ImageIcon image) {
+        this.typeOfPatternIndicator = 4;
+        this.combinationIndicator = combinationIndicator;
+        this.image = image;
+        this.name = "Small Center Box Pattern";
         lineToCheck = new ArrayList<>();
     }
 
@@ -31,8 +38,22 @@ public class SmallCenterBoxPattern implements WinningPattern {
     }
 
     @Override
-    public int getPatternIndicator() {
-        return this.patternIndicator;
+    public int getTypeOfPatternIndicator() {
+        return this.typeOfPatternIndicator;
     }
 
+    @Override
+    public ImageIcon getImage() {
+        return this.image;
+    }
+
+    @Override
+    public int getCombinationIndicator() {
+        return this.combinationIndicator;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
 }

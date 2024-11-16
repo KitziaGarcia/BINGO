@@ -4,16 +4,9 @@ import java.util.Random;
 public class BingoBoard extends Board {
     private ArrayList<ArrayList<Integer>> numbers;
 
-    public BingoBoard(int number) {
+    public BingoBoard() {
         initializeNumbers();
-        for (int i = 0; i < 5; i++) {
-            cells.add(new ArrayList<>());
-
-            for (int j = 0; j < 5; j++) {
-                cells.get(i).add(numbers.get(i).get(j));
-            }
-        }
-
+        initializeBoard();
         System.out.println(cells);
     }
 
@@ -28,14 +21,8 @@ public class BingoBoard extends Board {
             for (int j = 0; j < 5; j++) {
                 numberIndex = new Random().nextInt(numbers.get(i).size());
                 cells.get(i).add(numbers.get(i).get(numberIndex));
+                numbers.get(i).remove(numberIndex);
             }
-
-        /*for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                numberIndex = new Random().nextInt(numbers.get(i).size());
-                cells.add(numbers.get(i).get(numberIndex));
-            }
-        }*/
         }
 
         System.out.println(cells);
@@ -62,16 +49,6 @@ public class BingoBoard extends Board {
             }
         }
     }
-
-   /*public void markNumber(int number) {
-        for (ArrayList<Integer> row : cells) {
-            for (int i = 0; i < row.size(); i++) {
-                if (row.get(i) == number) {
-                    row.set(i, 0);
-                }
-            }
-        }
-    }*/
 
     public ArrayList<ArrayList<Integer>> getCells() {
         return cells;

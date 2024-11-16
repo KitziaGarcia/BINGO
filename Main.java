@@ -1,7 +1,9 @@
 public class Main {
     public static void main(String[] args) {
-        Bingo bingo = new Bingo();
-        bingo.test();
+        GUI gui = new GUI();
+
+        // Los valores de cada letra se ponen como filas, no columnas.
+        // Texto de BINGO en historial esta en la primera fila.
 
     }
 }

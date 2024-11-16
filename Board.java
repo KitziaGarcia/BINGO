@@ -10,16 +10,6 @@ public abstract class Board {
 
     protected abstract void initializeBoard();
 
-    public void markNumber(int number) {
-        for (ArrayList<Integer> row : cells) {
-            for (int i = 0; i < row.size(); i++) {
-                if (row.get(i) == number) {
-                    row.set(i, 0); // Mark as "called"
-                }
-            }
-        }
-    }
-
     public ArrayList<ArrayList<Integer>> getCells() {
         return cells;
     }

@@ -1,11 +1,18 @@
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class DiamondPattern implements WinningPattern {
-    private final int patternIndicator;
+    private final int typeOfPatternIndicator;
     private ArrayList<Integer> lineToCheck;
+    private int combinationIndicator;
+    private ImageIcon image;
+    private String name;
 
-    public DiamondPattern() {
-        this.patternIndicator = 3;
+    public DiamondPattern(int combinationIndicator, ImageIcon image) {
+        this.typeOfPatternIndicator = 3;
+        this.combinationIndicator = combinationIndicator;
+        this.image = image;
+        this.name = "Diamond Pattern";
         lineToCheck = new ArrayList<>();
     }
 
@@ -32,7 +39,22 @@ public class DiamondPattern implements WinningPattern {
     }
 
     @Override
-    public int getPatternIndicator() {
-        return this.patternIndicator;
+    public int getTypeOfPatternIndicator() {
+        return this.typeOfPatternIndicator;
+    }
+
+    @Override
+    public ImageIcon getImage() {
+        return this.image;
+    }
+
+    @Override
+    public int getCombinationIndicator() {
+        return this.combinationIndicator;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 }

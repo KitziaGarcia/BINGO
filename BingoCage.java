@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class BingoCage {
     private ArrayList<BingoBall> balls;
@@ -38,7 +39,20 @@ public class BingoCage {
         return balls;
     }
 
+    public BingoBall getRandomBall() {
+        int randomIndex;
+        BingoBall selectedBall;
+        randomIndex = new Random().nextInt(balls.size());
+        selectedBall = balls.get(randomIndex);
+        balls.remove(selectedBall);
+        return selectedBall;
+    }
+
     public void removeBall(BingoBall ball) {
         balls.remove(ball);
+    }
+
+    public boolean isCageEmpty() {
+        return balls.isEmpty();
     }
 }

@@ -1,12 +1,20 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class SixPackPattern implements WinningPattern {
-    private final int patternIndicator;
+    private final int typeOfPatternIndicator;
     private ArrayList<Integer> lineToCheck;
+    private int combinationIndicator;
+    private ImageIcon image;
+    private String name;
 
 
-    public SixPackPattern() {
-        this.patternIndicator = 2;
+    public SixPackPattern(int combinationIndicator, ImageIcon image) {
+        this.typeOfPatternIndicator = 2;
+        this.combinationIndicator = combinationIndicator;
+        this.image = image;
+        this.name = "Six Pack Pattern";
         lineToCheck = new ArrayList<>();
     }
 
@@ -78,7 +86,22 @@ public class SixPackPattern implements WinningPattern {
     }
 
     @Override
-    public int getPatternIndicator() {
-        return this.patternIndicator;
+    public int getTypeOfPatternIndicator() {
+        return this.typeOfPatternIndicator;
+    }
+
+    @Override
+    public ImageIcon getImage() {
+        return this.image;
+    }
+
+    @Override
+    public int getCombinationIndicator() {
+        return this.combinationIndicator;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 }
