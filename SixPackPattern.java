@@ -40,6 +40,7 @@ public class SixPackPattern implements WinningPattern {
                 setLineToCheckForFirstCase(startingRow, firstColumn, secondColumn, cells);
                 checkPattern(usedNumbers);
                 break;
+
             case 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24:
                 if (selectedPattern == 13 || selectedPattern == 14 || selectedPattern == 15) {
                     offset = 13;
@@ -62,18 +63,18 @@ public class SixPackPattern implements WinningPattern {
         }
     }
 
-    public void setLineToCheckForFirstCase(int startingRow, int firstColumn, int secondColumn, ArrayList<ArrayList<Integer>> cells) {
+    public void setLineToCheckForFirstCase(int startingRow, int firstRow, int secondRow, ArrayList<ArrayList<Integer>> cells) {
         for (int i = startingRow; i < startingRow + 3; i++) {
-            lineToCheck.add((cells.get(firstColumn)).get(i));
-            lineToCheck.add((cells.get(secondColumn)).get(i));
+            lineToCheck.add((cells.get(i)).get(firstRow));
+            lineToCheck.add((cells.get(i)).get(secondRow));
         }
     }
 
     public void setLineToCheckForSecondCase(int startingRow, int firstColumn, int secondColumn, int thirdColumn, ArrayList<ArrayList<Integer>> cells) {
         for (int i = startingRow; i < startingRow + 2; i++) {
-            lineToCheck.add((cells.get(firstColumn)).get(i));
-            lineToCheck.add((cells.get(secondColumn)).get(i));
-            lineToCheck.add((cells.get(thirdColumn)).get(i));
+            lineToCheck.add((cells.get(i)).get(firstColumn));
+            lineToCheck.add((cells.get(i)).get(secondColumn));
+            lineToCheck.add((cells.get(i)).get(thirdColumn));
         }
         System.out.println(lineToCheck);
     }
@@ -81,6 +82,7 @@ public class SixPackPattern implements WinningPattern {
 
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
+        System.out.println("LINE TO CHECK: " + lineToCheck);
         System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
     }

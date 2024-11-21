@@ -29,6 +29,6 @@ public class BingoBall {
     }
 
     public String toString() {
-        return this.letter + this.number;
+        return this.letter + "-" + this.number;
     }
 }

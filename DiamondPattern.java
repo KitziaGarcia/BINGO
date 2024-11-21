@@ -34,6 +34,7 @@ public class DiamondPattern implements WinningPattern {
 
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
+        System.out.println("LINE TO CHECK: " + lineToCheck);
         System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
     }

@@ -1,23 +1,18 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 public class Bingo {
     private WinningPattern selectedPattern;
     private ArrayList<Integer> usedNumbers;
-    //private ArrayList<BingoBall> usedNumbers;
     private BingoCage cage;
     private BingoBoard board;
+    private BingoBall selectedBall;
 
     public Bingo(WinningPattern selectedPattern) {
         this.selectedPattern = selectedPattern;
         cage = new BingoCage();
         board = new BingoBoard();
-    }
-
-    //ESTO ES LO QUE HARAS EN LA GUI.
-    public void play() {
-
+        usedNumbers = new ArrayList<>();
     }
 
     public boolean isGameOver() {
@@ -35,11 +30,23 @@ public class Bingo {
         this.selectedPattern = selectedPattern;
     }
 
-    public void setUsedNumbers(int number) {
+    public ArrayList<Integer> getUsedNumbers() {
+        return usedNumbers;
+    }
+
+    public void addUsedNumber(int number) {
         usedNumbers.add(number);
     }
 
     public BingoBoard getBoard() {
         return board;
+    }
+
+    public BingoBall getSelectedBall() {
+        return selectedBall;
+    }
+
+    public void setSelectedBall(BingoBall selectedBall) {
+        this.selectedBall = selectedBall;
     }
 }

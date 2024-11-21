@@ -26,13 +26,13 @@ public class FiveInARowPattern implements WinningPattern {
         switch (selectedPattern) {
             case 1, 2, 3, 4, 5:
                 int column = selectedPattern - 1;
-                lineToCheck = cells.get(column);
+                for (int i = 0; i < 5; i++) {
+                    lineToCheck.add(cells.get(i).get(column));
+                }
                 break;
             case 6, 7, 8, 9, 10:
                 int row = selectedPattern - 6;
-                for (int i = 0; i < 5; i++) {
-                    lineToCheck.add(cells.get(i).get(row));
-                }
+                lineToCheck = cells.get(row);
                 break;
             case 11:
                 for (int i = 0; i < 5; i++) {
@@ -52,6 +52,7 @@ public class FiveInARowPattern implements WinningPattern {
 
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
+        System.out.println("LINE TO CHECK: " + lineToCheck);
         System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
     }

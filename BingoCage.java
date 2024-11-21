@@ -44,7 +44,6 @@ public class BingoCage {
         BingoBall selectedBall;
         randomIndex = new Random().nextInt(balls.size());
         selectedBall = balls.get(randomIndex);
-        balls.remove(selectedBall);
         return selectedBall;
     }
 

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GUI extends JFrame {
     private ArrayList<WinningPattern> patterns = new ArrayList<>();
@@ -10,8 +11,15 @@ public class GUI extends JFrame {
     private JPanel patternsPanel;
     private JPanel boardContainer;
     private JPanel boardPanel;
+    private JPanel panel1;
     private Bingo game;
     private BingoCage cage;
+    private ArrayList<Integer> allNumbers;
+    private JLabel ballDisplay;
+    private JPanel cagePanel;
+    private ArrayList<JLabel> usedNumbersLabels;
+    private JPanel historicoPanel;
+    private ArrayList<JLabel> boardCellLabels;
 
 
     public GUI() {
@@ -51,10 +59,6 @@ public class GUI extends JFrame {
                     JOptionPane.showMessageDialog(GUI.this,
                             "Has seleccionado: " + selectedPattern.getName(),
                             "Patrón Seleccionado", JOptionPane.INFORMATION_MESSAGE);
-                    /*patternsPanel.removeAll();
-                    patternsPanel.revalidate();
-                    patternsPanel.repaint();*/
-
                     remove(patternsPanel);
                     remove(label);
                     revalidate();
@@ -71,6 +75,7 @@ public class GUI extends JFrame {
 
     public void initializeGame() {
         game = new Bingo(getSelectedPattern());
+        boardCellLabels = new ArrayList<>();
 
         setLayout(new BorderLayout());
 
@@ -107,8 +112,11 @@ public class GUI extends JFrame {
                     numberLabel.setMinimumSize(new Dimension(40, 40));
                     numberLabel.setMaximumSize(new Dimension(40, 40));
                     numberLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    numberLabel.setBackground(Color.YELLOW);
+                    numberLabel.setOpaque(false);
 
                     boardPanel.add(numberLabel);
+                    boardCellLabels.add(numberLabel);
                 }
             }
         }
@@ -116,11 +124,7 @@ public class GUI extends JFrame {
         boardContainer.add(boardPanel, BorderLayout.CENTER);
         add(boardContainer);
 
-
-
-
-
-        JPanel panel1 = new JPanel();
+        panel1 = new JPanel();
         panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
         panel1.setBackground(new Color(3, 60, 0));
 
@@ -128,64 +132,99 @@ public class GUI extends JFrame {
         photoLabel.setIcon(getSelectedPattern().getImage());
         panel1.add(photoLabel);
 
+        cagePanel = new JPanel();
+        cagePanel.setLayout(new GridLayout(1, 2, 3, 3));
         JButton spinCage = new JButton("Girar tombola");
-        spinCage.setPreferredSize(new Dimension(200, 200));
-        panel1.add(spinCage);
+        spinCage.setPreferredSize(new Dimension(50, 50));
+        cagePanel.add(spinCage);
         spinCage.setVisible(true);
 
+        ballDisplay = new JLabel();
+
+        spinCage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.setSelectedBall(cage.getRandomBall());
+                cage.removeBall(game.getSelectedBall());
+
+                ballDisplay.setText(game.getSelectedBall().toString());
+                ballDisplay.setPreferredSize(new Dimension(25, 25));
+                ballDisplay.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                ballDisplay.setHorizontalAlignment(SwingConstants.CENTER);
+                ballDisplay.setVerticalAlignment(SwingConstants.CENTER);
+                ballDisplay.setFont(new Font("Arial", Font.BOLD, 16));
+                cagePanel.add(ballDisplay);
+
+                game.addUsedNumber(game.getSelectedBall().getNumber());
+                markUsedNumbers(game.getSelectedBall().getNumber(), usedNumbersLabels);
+                markUsedNumbers(game.getSelectedBall().getNumber(), boardCellLabels);
+
+                panel1.revalidate();
+                panel1.repaint();
+
+                boardPanel.revalidate();
+                boardPanel.repaint();
+
+                isGameFinished();
+                isGameOver();
+            }
+        });
+
+        panel1.add(cagePanel);
         add(panel1, BorderLayout.EAST);
 
-        createHistoricoPanel();
+        createUsedNumbersDisplay();
     }
 
-    public void createHistoricoPanel() {
+    public void createUsedNumbersDisplay() {
         cage = new BingoCage();
+        allNumbers = game.getBoard().getAllNumbers();
+        usedNumbersLabels = new ArrayList<>();
 
-        JPanel historicoPanel = new JPanel();
-        historicoPanel.setLayout(new GridLayout(5, 16, 5, 5));
+        System.out.println(allNumbers);
 
-        String[] headers = {"B", "I", "N", "G", "O"};
+        ArrayList<String> headers = new ArrayList<>(Arrays.asList("B", "I", "N", "G", "O"));
+
+        historicoPanel = new JPanel();
+        historicoPanel.setLayout(new GridLayout(16, 5, 3, 3));
 
         for (int i = 0; i < 5; i++) {
-            JLabel label = new JLabel(headers[i], SwingConstants.CENTER);
-            label.setPreferredSize(new Dimension(40, 40));
-            label.setMinimumSize(new Dimension(40, 40));
-            label.setMaximumSize(new Dimension(40, 40));
+            JLabel label = new JLabel(headers.get(i), SwingConstants.CENTER);
+            label.setPreferredSize(new Dimension(25, 25));
+            label.setMinimumSize(new Dimension(25, 25));
+            label.setMaximumSize(new Dimension(25, 25));
             label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
             historicoPanel.add(label);
         }
 
-        for (int i = 0; i < 75; i++) {
-            JLabel ballLabel = new JLabel(String.valueOf(cage.getBalls().get(i).getNumber()));
+        for (int i = 1; i < 76; i++) {
+            JLabel ballLabel = new JLabel(String.valueOf(allNumbers.get(i-1)));
             ballLabel.setHorizontalAlignment(SwingConstants.CENTER);
             ballLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-            switch (cage.getBalls().get(i).getLetter()) {
-                case "B":
-                    ballLabel.setBackground(Color.RED);
-                    break;
-                case "I":
-                    ballLabel.setBackground(Color.BLUE);
-                    break;
-                case "N":
-                    ballLabel.setBackground(Color.GREEN);
-                    break;
-                case "G":
-                    ballLabel.setBackground(Color.YELLOW);
-                    break;
-                case "O":
-                    ballLabel.setBackground(Color.MAGENTA);
-                    break;
+            if (allNumbers.get(i-1) < 16) {
+                ballLabel.setBackground(Color.RED);
+            } else if (allNumbers.get(i-1) < 31) {
+                ballLabel.setBackground(Color.BLUE);
+            } else if (allNumbers.get(i-1) < 46) {
+                ballLabel.setBackground(Color.GREEN);
+            } else if (allNumbers.get(i-1) < 61) {
+                ballLabel.setBackground(Color.YELLOW);
+            } else {
+                ballLabel.setBackground(Color.MAGENTA);
             }
 
-            ballLabel.setOpaque(true);
+            usedNumbersLabels.add(ballLabel);
+            ballLabel.setOpaque(false);
+            ballLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
             historicoPanel.add(ballLabel);
         }
 
-        add(historicoPanel, BorderLayout.NORTH);
-
+        panel1.add(historicoPanel);
+        panel1.revalidate();
+        panel1.repaint();
 
     }
 
@@ -235,6 +274,34 @@ public class GUI extends JFrame {
             return new ImageIcon(imageUrl);
         } else {
             return null;
+        }
+    }
+
+    public void markUsedNumbers(int value, ArrayList<JLabel> collection) {
+        for(JLabel label : collection) {
+            if (label.getText().equals(String.valueOf(value))) {
+                label.setOpaque(true);
+                break;
+            }
+        }
+    }
+
+    public boolean isGameFinished() {
+        boolean gameFinished;
+        selectedPattern.setPositionsToCheck(selectedPattern.getCombinationIndicator(), game.getUsedNumbers(), game.getBoard().getCells());
+
+        if (selectedPattern.checkPattern(game.getUsedNumbers())) {
+            JOptionPane.showMessageDialog(null, "Has hecho BINGO!");
+            gameFinished = true;
+        } else {
+            gameFinished = false;
+        }
+        return gameFinished;
+    }
+
+    public void isGameOver() {
+        if (cage.getBalls().isEmpty() && !isGameFinished()) {
+            JOptionPane.showMessageDialog(null, "Ya no hay mas bolas de bingo, has perdido.");
         }
     }
 
