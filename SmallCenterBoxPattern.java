@@ -7,6 +7,7 @@ public class SmallCenterBoxPattern implements WinningPattern {
     private int combinationIndicator;
     private ImageIcon image;
     private String name;
+    private ArrayList<ArrayList<Boolean>> patternCells;
 
     public SmallCenterBoxPattern(int combinationIndicator, ImageIcon image) {
         this.typeOfPatternIndicator = 4;
@@ -14,17 +15,30 @@ public class SmallCenterBoxPattern implements WinningPattern {
         this.image = image;
         this.name = "Small Center Box Pattern";
         lineToCheck = new ArrayList<>();
+        patternCells = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            patternCells.add(new ArrayList<>());
+
+            for (int j = 0; j < 5; j++) {
+                patternCells.get(i).add(false);
+            }
+        }
     }
 
     @Override
     public void setPositionsToCheck(int selectedPattern, ArrayList<Integer> usedNumbers, ArrayList<ArrayList<Integer>> cells) {
+        lineToCheck.clear();
         for (int i = 1; i <= 3; i++) {
             if (i == 2) {
                 lineToCheck.add(cells.get(i).get(1));
                 lineToCheck.add(cells.get(i).get(3));
+                patternCells.get(i).set(1, true);
+                patternCells.get(i).set(3, true);
             } else {
                 for (int j = 1; j <= 3; j++) {
                     lineToCheck.add(cells.get(i).get(j));
+                    patternCells.get(i).set(j, true);
                 }
             }
         }
@@ -33,7 +47,6 @@ public class SmallCenterBoxPattern implements WinningPattern {
 
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
-        System.out.println("LINE TO CHECK: " + lineToCheck);
         System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
     }
@@ -56,5 +69,10 @@ public class SmallCenterBoxPattern implements WinningPattern {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public ArrayList<ArrayList<Boolean>> getPatternCells() {
+        return patternCells;
     }
 }

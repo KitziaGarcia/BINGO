@@ -7,6 +7,7 @@ public class DiamondPattern implements WinningPattern {
     private int combinationIndicator;
     private ImageIcon image;
     private String name;
+    private ArrayList<ArrayList<Boolean>> patternCells;
 
     public DiamondPattern(int combinationIndicator, ImageIcon image) {
         this.typeOfPatternIndicator = 3;
@@ -14,27 +15,37 @@ public class DiamondPattern implements WinningPattern {
         this.image = image;
         this.name = "Diamond Pattern";
         lineToCheck = new ArrayList<>();
+        patternCells = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            patternCells.add(new ArrayList<>());
+
+            for (int j = 0; j < 5; j++) {
+                patternCells.get(i).add(false);
+            }
+        }
     }
 
     @Override
     public void setPositionsToCheck(int selectedPattern, ArrayList<Integer> usedNumbers, ArrayList<ArrayList<Integer>> cells) {
         int[] offsets = {0, 1, 2, 1, 0};
+        lineToCheck.clear();
 
         for (int i = 0; i < 5; i++) {
             int center = 2;
             int offset = offsets[i];
 
             lineToCheck.add(cells.get(i).get(center - offset));
+            patternCells.get(i).set(center - offset, true);
             if (offset > 0) {
                 lineToCheck.add(cells.get(i).get(center + offset));
+                patternCells.get(i).set(center + offset, true);
             }
         }
-        checkPattern(usedNumbers);
     }
 
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
-        System.out.println("LINE TO CHECK: " + lineToCheck);
         System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
     }
@@ -58,4 +69,10 @@ public class DiamondPattern implements WinningPattern {
     public String getName() {
         return this.name;
     }
+
+    @Override
+    public ArrayList<ArrayList<Boolean>> getPatternCells() {
+        return patternCells;
+    }
+
 }

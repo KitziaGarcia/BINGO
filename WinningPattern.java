@@ -8,4 +8,5 @@ public interface WinningPattern {
     ImageIcon getImage();
     int getCombinationIndicator();
     String getName();
+    ArrayList<ArrayList<Boolean>> getPatternCells();
 }

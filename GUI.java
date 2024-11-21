@@ -112,7 +112,15 @@ public class GUI extends JFrame {
                     numberLabel.setMinimumSize(new Dimension(40, 40));
                     numberLabel.setMaximumSize(new Dimension(40, 40));
                     numberLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                    numberLabel.setBackground(Color.YELLOW);
+
+                    isGameFinished();
+
+                    if (!selectedPattern.getPatternCells().get(i-1).get(j)) {
+                        numberLabel.setBackground(new Color(255, 255, 150));
+                    } else if (selectedPattern.getPatternCells().get(i-1).get(j)) {
+                        numberLabel.setBackground(new Color(2, 250, 200));
+                    }
+
                     numberLabel.setOpaque(false);
 
                     boardPanel.add(numberLabel);
@@ -121,6 +129,7 @@ public class GUI extends JFrame {
             }
         }
 
+        System.out.println(selectedPattern.getPatternCells());
         boardContainer.add(boardPanel, BorderLayout.CENTER);
         add(boardContainer);
 
@@ -128,9 +137,12 @@ public class GUI extends JFrame {
         panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
         panel1.setBackground(new Color(3, 60, 0));
 
+        JPanel photoPanel = new JPanel();
         JLabel photoLabel = new JLabel();
         photoLabel.setIcon(getSelectedPattern().getImage());
-        panel1.add(photoLabel);
+        photoPanel.add(photoLabel);
+        photoPanel.setBackground(new Color(3, 60, 0));
+        panel1.add(photoPanel);
 
         cagePanel = new JPanel();
         cagePanel.setLayout(new GridLayout(1, 2, 3, 3));
@@ -166,7 +178,6 @@ public class GUI extends JFrame {
                 boardPanel.repaint();
 
                 isGameFinished();
-                isGameOver();
             }
         });
 
@@ -297,12 +308,6 @@ public class GUI extends JFrame {
             gameFinished = false;
         }
         return gameFinished;
-    }
-
-    public void isGameOver() {
-        if (cage.getBalls().isEmpty() && !isGameFinished()) {
-            JOptionPane.showMessageDialog(null, "Ya no hay mas bolas de bingo, has perdido.");
-        }
     }
 
     public WinningPattern getSelectedPattern() {

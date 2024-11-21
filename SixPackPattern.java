@@ -8,6 +8,7 @@ public class SixPackPattern implements WinningPattern {
     private int combinationIndicator;
     private ImageIcon image;
     private String name;
+    private ArrayList<ArrayList<Boolean>> patternCells;
 
 
     public SixPackPattern(int combinationIndicator, ImageIcon image) {
@@ -16,6 +17,15 @@ public class SixPackPattern implements WinningPattern {
         this.image = image;
         this.name = "Six Pack Pattern";
         lineToCheck = new ArrayList<>();
+        patternCells = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            patternCells.add(new ArrayList<>());
+
+            for (int j = 0; j < 5; j++) {
+                patternCells.get(i).add(false);
+            }
+        }
     }
 
     @Override
@@ -25,6 +35,7 @@ public class SixPackPattern implements WinningPattern {
         int thirdColumn = 0;
         int startingRow = 0;
         int offset = 1;
+        lineToCheck.clear();
 
         switch(selectedPattern) {
             case 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12:
@@ -38,7 +49,6 @@ public class SixPackPattern implements WinningPattern {
                 firstColumn = selectedPattern - offset;
                 secondColumn = firstColumn + 1;
                 setLineToCheckForFirstCase(startingRow, firstColumn, secondColumn, cells);
-                checkPattern(usedNumbers);
                 break;
 
             case 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24:
@@ -58,7 +68,6 @@ public class SixPackPattern implements WinningPattern {
                 secondColumn = firstColumn + 1;
                 thirdColumn = secondColumn + 1;
                 setLineToCheckForSecondCase(startingRow, firstColumn, secondColumn, thirdColumn, cells);
-                checkPattern(usedNumbers);
                 break;
         }
     }
@@ -67,6 +76,9 @@ public class SixPackPattern implements WinningPattern {
         for (int i = startingRow; i < startingRow + 3; i++) {
             lineToCheck.add((cells.get(i)).get(firstRow));
             lineToCheck.add((cells.get(i)).get(secondRow));
+
+            patternCells.get(i).set(firstRow, true);
+            patternCells.get(i).set(secondRow, true);
         }
     }
 
@@ -75,15 +87,16 @@ public class SixPackPattern implements WinningPattern {
             lineToCheck.add((cells.get(i)).get(firstColumn));
             lineToCheck.add((cells.get(i)).get(secondColumn));
             lineToCheck.add((cells.get(i)).get(thirdColumn));
+
+            patternCells.get(i).set(firstColumn, true);
+            patternCells.get(i).set(secondColumn, true);
+            patternCells.get(i).set(thirdColumn, true);
         }
-        System.out.println(lineToCheck);
     }
 
 
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
-        System.out.println("LINE TO CHECK: " + lineToCheck);
-        System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
     }
 
@@ -105,5 +118,10 @@ public class SixPackPattern implements WinningPattern {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public ArrayList<ArrayList<Boolean>> getPatternCells() {
+        return patternCells;
     }
 }
