@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Esta clase extiende la clase abstracta Board y representa un tablero de Bingo.
+ * Proporciona métodos para inicializar el tablero y acceder a sus valores.
+ */
 public class BingoBoard extends Board {
     private ArrayList<Integer> numbers;
     private ArrayList<Integer> valuesForB;
@@ -10,11 +14,19 @@ public class BingoBoard extends Board {
     private ArrayList<Integer> valuesForG;
     private ArrayList<Integer> valuesForO;
 
+    /**
+     * Constructor de la clase BingoBoard.
+     * Inicializa el tablero de Bingo con valores aleatorios en cada columna.
+     */
     public BingoBoard() {
         initializeBoard();
         System.out.println(cells);
     }
 
+    /**
+     * Inicializa el tablero de Bingo con números aleatorios en cada columna.
+     * Asigna valores dentro del rango específico para cada columna (B, I, N, G, O).
+     */
     public void initializeBoard() {
         int numberIndex;
 
@@ -50,13 +62,24 @@ public class BingoBoard extends Board {
             valuesForO.remove(numberIndex);
         }
 
+        cells.get(2).set(2, -1);
+
         System.out.println(cells);
     }
 
+
+    /**
+     * Devuelve el estado actual del tablero de Bingo.
+     * @return Una lista de enteros que representan el tablero.
+     */
     public ArrayList<ArrayList<Integer>> getCells() {
         return cells;
     }
 
+    /**
+     * Devuelve la lista de todos los números posibles utilizados en el tablero.
+     * @return Una lista de enteros que contiene todos los números del rango de Bingo.
+     */
     public ArrayList<Integer> getAllNumbers() {
         return numbers;
     }

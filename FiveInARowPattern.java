@@ -1,18 +1,21 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class FiveInARowPattern implements WinningPattern {
-    private final int typeOfPatternIndicator;
-    private int combinationIndicator;
+/**
+ * Representa el patrón "Cinco en línea".
+ * Este patrón puede ser una fila, columna o diagonal completa de un tablero.
+ * Extiende la clase Pattern para añadir lógica específica de este patrón.
+ */
+public class FiveInARowPattern extends Pattern {
     private ArrayList<Integer> lineToCheck;
-    private ArrayList<FiveInARowPattern> patterns;
-    private ImageIcon image;
-    private String name;
-    private ArrayList<ArrayList<Boolean>> patternCells;
 
+    /**
+     * Constructor de la clase FiveInARowPattern.
+     * @param combinationIndicator Un valor entero que indica el identificador del patrón.
+     * @param image Imagen asociada al patrón.
+     */
     public FiveInARowPattern(int combinationIndicator, ImageIcon image) {
+        super(combinationIndicator, image);
         this.typeOfPatternIndicator = 1;
         this.combinationIndicator = combinationIndicator;
         this.image = image;
@@ -29,6 +32,12 @@ public class FiveInARowPattern implements WinningPattern {
         }
     }
 
+    /**
+     * Configura las posiciones necesarias para formar el patrón "Cinco en línea".
+     * @param selectedPattern Patrón seleccionado.
+     * @param usedNumbers Lista de números ya utilizados en el juego.
+     * @param cells Matriz que representa las celdas del tablero.
+     */
     @Override
     public void setPositionsToCheck(int selectedPattern, ArrayList<Integer> usedNumbers, ArrayList<ArrayList<Integer>> cells) {
         int cell = 0;
@@ -65,36 +74,18 @@ public class FiveInARowPattern implements WinningPattern {
                 }
                 break;
         }
+        System.out.println(lineToCheck);
     }
 
+    /**
+     * Verifica si los números utilizados en el juego coinciden con los números
+     * necesarios para completar el patrón seleccionado.
+     * @param usedNumbers Lista de números que han sido seleccionados en el juego.
+     * @return true si todos los números necesarios están en la lista de números usados.
+     */
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
         System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
-    }
-
-    @Override
-    public int getTypeOfPatternIndicator() {
-        return this.typeOfPatternIndicator;
-    }
-
-    @Override
-    public ImageIcon getImage() {
-        return this.image;
-    }
-
-    @Override
-    public int getCombinationIndicator() {
-        return this.combinationIndicator;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ArrayList<ArrayList<Boolean>> getPatternCells() {
-        return patternCells;
     }
 }

@@ -5,9 +5,16 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Representa la interfaz gráfica de un juego de Bingo.
+ * Gestiona la visualización de los patrones disponibles, la selección del patrón,
+ * la creación y gestión del tablero de juego, y la interacción con los botones de la interfaz.
+ * Permite iniciar el juego, mostrar números aleatorios, marcar números utilizados en el tablero
+ * y verificar si se ha completado el patrón seleccionado.
+ */
 public class GUI extends JFrame {
-    private ArrayList<WinningPattern> patterns = new ArrayList<>();
-    private WinningPattern selectedPattern;
+    private ArrayList<Pattern> patterns = new ArrayList<>();
+    private Pattern selectedPattern;
     private JPanel patternsPanel;
     private JPanel boardContainer;
     private JPanel boardPanel;
@@ -20,15 +27,22 @@ public class GUI extends JFrame {
     private ArrayList<JLabel> usedNumbersLabels;
     private JPanel historicoPanel;
     private ArrayList<JLabel> boardCellLabels;
+    private JButton bingoButton;
+    private JButton spinCage;
 
-
+    /**
+     * Contructor de la clase GUI.
+     */
     public GUI() {
         createPatternList();
         selectPatternToWin();
     }
 
-
-
+    /**
+     * Configura y muestra la interfaz para que el jugador seleccione un patrón para ganar.
+     * Muestra una lista de patrones disponibles, y cuando el usuario selecciona uno,
+     * lo establece como el patrón a seguir en el juego.
+     */
     public void selectPatternToWin() {
         setTitle("Bingo Patterns");
         setSize(800, 600);
@@ -43,7 +57,7 @@ public class GUI extends JFrame {
         patternsPanel.setLayout(new GridLayout(6, 7, 10, 10));
         add(patternsPanel, BorderLayout.CENTER);
 
-        for (WinningPattern pattern : patterns) {
+        for (Pattern pattern : patterns) {
             ImageIcon originalImage = pattern.getImage();
             Image resizedImage = originalImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             ImageIcon resizedIcon = new ImageIcon(resizedImage);
@@ -58,7 +72,7 @@ public class GUI extends JFrame {
                     setSelectedPattern(pattern);
                     JOptionPane.showMessageDialog(GUI.this,
                             "Has seleccionado: " + selectedPattern.getName(),
-                            "Patrón Seleccionado", JOptionPane.INFORMATION_MESSAGE);
+                            "Patrón Seleccionado.", JOptionPane.INFORMATION_MESSAGE);
                     remove(patternsPanel);
                     remove(label);
                     revalidate();
@@ -73,8 +87,14 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Inicializa el tablero de juego con el patrón seleccionado y configura la interfaz para el juego de Bingo.
+     * Crea las celdas del tablero, agrega los botones de girar tómbola y marcar Bingo
+     * y muestra los números utilizados.
+     */
     public void initializeGame() {
         game = new Bingo(getSelectedPattern());
+        addFreeSpace();
         boardCellLabels = new ArrayList<>();
 
         setLayout(new BorderLayout());
@@ -104,7 +124,15 @@ public class GUI extends JFrame {
                     boardPanel.add(headerLabel);
                 } else {
                     int cellValue = game.getBoard().getCells().get(i - 1).get(j);
-                    numberLabel = new JLabel(String.valueOf(cellValue), SwingConstants.CENTER);
+
+                    if (cellValue == -1) {
+                        numberLabel = new JLabel("Free Space", SwingConstants.CENTER);
+                        numberLabel.setOpaque(true);
+                    } else {
+                        numberLabel = new JLabel(String.valueOf(cellValue), SwingConstants.CENTER);
+                        numberLabel.setOpaque(false);
+                    }
+
                     numberLabel.setHorizontalAlignment(SwingConstants.CENTER);
                     numberLabel.setVerticalAlignment(SwingConstants.CENTER);
                     numberLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -113,15 +141,12 @@ public class GUI extends JFrame {
                     numberLabel.setMaximumSize(new Dimension(40, 40));
                     numberLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                    isGameFinished();
-
-                    if (!selectedPattern.getPatternCells().get(i-1).get(j)) {
+                    selectedPattern.setPositionsToCheck(selectedPattern.getCombinationIndicator(), game.getUsedNumbers(), game.getBoard().getCells());
+                    if (!selectedPattern.getPatternCells().get(i - 1).get(j)) {
                         numberLabel.setBackground(new Color(255, 255, 150));
-                    } else if (selectedPattern.getPatternCells().get(i-1).get(j)) {
+                    } else if (selectedPattern.getPatternCells().get(i - 1).get(j)) {
                         numberLabel.setBackground(new Color(2, 250, 200));
                     }
-
-                    numberLabel.setOpaque(false);
 
                     boardPanel.add(numberLabel);
                     boardCellLabels.add(numberLabel);
@@ -146,9 +171,14 @@ public class GUI extends JFrame {
 
         cagePanel = new JPanel();
         cagePanel.setLayout(new GridLayout(1, 2, 3, 3));
-        JButton spinCage = new JButton("Girar tombola");
+        spinCage = new JButton("GIRAR");
         spinCage.setPreferredSize(new Dimension(50, 50));
         cagePanel.add(spinCage);
+        spinCage.setVisible(true);
+
+        bingoButton = new JButton("BINGO");
+        bingoButton.setPreferredSize(new Dimension(50, 50));
+        cagePanel.add(bingoButton);
         spinCage.setVisible(true);
 
         ballDisplay = new JLabel();
@@ -156,6 +186,7 @@ public class GUI extends JFrame {
         spinCage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 game.setSelectedBall(cage.getRandomBall());
                 cage.removeBall(game.getSelectedBall());
 
@@ -171,12 +202,22 @@ public class GUI extends JFrame {
                 markUsedNumbers(game.getSelectedBall().getNumber(), usedNumbersLabels);
                 markUsedNumbers(game.getSelectedBall().getNumber(), boardCellLabels);
 
+                if (cage.isCageEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Ya no hay bolas en la tómbola.");
+                    spinCage.setEnabled(false);
+                }
+
                 panel1.revalidate();
                 panel1.repaint();
 
                 boardPanel.revalidate();
                 boardPanel.repaint();
+            }
+        });
 
+        bingoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 isGameFinished();
             }
         });
@@ -187,6 +228,9 @@ public class GUI extends JFrame {
         createUsedNumbersDisplay();
     }
 
+    /**
+     * Crea y muestra la lista de los números utilizados en el juego de Bingo.
+     */
     public void createUsedNumbersDisplay() {
         cage = new BingoCage();
         allNumbers = game.getBoard().getAllNumbers();
@@ -210,17 +254,17 @@ public class GUI extends JFrame {
         }
 
         for (int i = 1; i < 76; i++) {
-            JLabel ballLabel = new JLabel(String.valueOf(allNumbers.get(i-1)));
+            JLabel ballLabel = new JLabel(String.valueOf(allNumbers.get(i - 1)));
             ballLabel.setHorizontalAlignment(SwingConstants.CENTER);
             ballLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-            if (allNumbers.get(i-1) < 16) {
+            if (allNumbers.get(i - 1) < 16) {
                 ballLabel.setBackground(Color.RED);
-            } else if (allNumbers.get(i-1) < 31) {
+            } else if (allNumbers.get(i - 1) < 31) {
                 ballLabel.setBackground(Color.BLUE);
-            } else if (allNumbers.get(i-1) < 46) {
+            } else if (allNumbers.get(i - 1) < 46) {
                 ballLabel.setBackground(Color.GREEN);
-            } else if (allNumbers.get(i-1) < 61) {
+            } else if (allNumbers.get(i - 1) < 61) {
                 ballLabel.setBackground(Color.YELLOW);
             } else {
                 ballLabel.setBackground(Color.MAGENTA);
@@ -239,6 +283,9 @@ public class GUI extends JFrame {
 
     }
 
+    /**
+     * Crea y carga la lista de patrones disponibles en el juego de Bingo.
+     */
     public void createPatternList() {
         ArrayList<ImageIcon> images = new ArrayList<>();
 
@@ -279,6 +326,12 @@ public class GUI extends JFrame {
         }
     }
 
+    /**
+     * Carga una imagen desde un archivo dentro del proyecto y la devuelve como un objeto ImageIcon.
+     * Si la imagen no se encuentra, devuelve null.
+     * @param fileName el nombre del archivo de la imagen a cargar.
+     * @return un objeto ImageIcon que representa la imagen cargada.
+     */
     private ImageIcon loadImage(String fileName) {
         java.net.URL imageUrl = getClass().getResource(fileName);
         if (imageUrl != null) {
@@ -288,8 +341,14 @@ public class GUI extends JFrame {
         }
     }
 
+    /**
+     * Compara cada número con los números en una colección y actualiza el estado visual
+     * de las celdas para reflejar los números que ya han sido seleccionados.
+     * @param value el número que se ha seleccionado.
+     * @param collection la lista de etiquetas que muestran los números en la interfaz.
+     */
     public void markUsedNumbers(int value, ArrayList<JLabel> collection) {
-        for(JLabel label : collection) {
+        for (JLabel label : collection) {
             if (label.getText().equals(String.valueOf(value))) {
                 label.setOpaque(true);
                 break;
@@ -297,26 +356,53 @@ public class GUI extends JFrame {
         }
     }
 
-    public boolean isGameFinished() {
-        boolean gameFinished;
-        selectedPattern.setPositionsToCheck(selectedPattern.getCombinationIndicator(), game.getUsedNumbers(), game.getBoard().getCells());
-
+    /**
+     * Verifica si el jugador ha completado el patrón seleccionado y ha ganado el juego de Bingo.
+     */
+    public void isGameFinished() {
         if (selectedPattern.checkPattern(game.getUsedNumbers())) {
             JOptionPane.showMessageDialog(null, "Has hecho BINGO!");
-            gameFinished = true;
+            bingoButton.setEnabled(false);
+            spinCage.setEnabled(false);
         } else {
-            gameFinished = false;
+            JOptionPane.showMessageDialog(null, "No has hecho BINGO con el patrón seleccionado.");
         }
-        return gameFinished;
     }
 
-    public WinningPattern getSelectedPattern() {
+    /**
+     * Agrega un espacio libre en el tablero de Bingo, dependiendo del patrón seleccionado.
+     */
+    public void addFreeSpace() {
+        int indicator = selectedPattern.getCombinationIndicator();
+
+        switch (selectedPattern.getTypeOfPatternIndicator()) {
+            case 1:
+                if (indicator == 3 || indicator == 8 || indicator == 11 || indicator == 12) {
+                    game.addUsedNumber(-1);
+                }
+                break;
+            case 2:
+                if (indicator == 2 || indicator == 3 || indicator == 6 || indicator == 7 || indicator == 10 || indicator == 11 || indicator == 16 || indicator == 17
+                        || indicator == 18 || indicator == 19 || indicator == 20 || indicator == 21) {
+                    game.addUsedNumber(-1);
+                }
+                break;
+        }
+    }
+
+    /**
+     * Obtiene el patrón seleccionado actualmente.
+     * @return el patrón seleccionado.
+     */
+    public Pattern getSelectedPattern() {
         return selectedPattern;
     }
 
-    public void setSelectedPattern(WinningPattern selectedPattern) {
+    /**
+     * Establece el patrón seleccionado actualmente.
+     * @param selectedPattern el patrón a seleccionar.
+     */
+    public void setSelectedPattern(Pattern selectedPattern) {
         this.selectedPattern = selectedPattern;
     }
-
-
 }

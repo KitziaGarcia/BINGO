@@ -1,31 +1,33 @@
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class SmallCenterBoxPattern implements WinningPattern {
-    private final int typeOfPatternIndicator;
+/**
+ * Clase que representa el patrón "Small Center Box".
+ */
+public class SmallCenterBoxPattern extends Pattern {
     private ArrayList<Integer> lineToCheck;
-    private int combinationIndicator;
-    private ImageIcon image;
-    private String name;
-    private ArrayList<ArrayList<Boolean>> patternCells;
 
+    /**
+     * Constructor de la clase SmallCenterBoxPattern.
+     * @param combinationIndicator el indicador de combinación específica.
+     * @param image la imagen asociada al patrón.
+     */
     public SmallCenterBoxPattern(int combinationIndicator, ImageIcon image) {
+        super(combinationIndicator, image);
         this.typeOfPatternIndicator = 4;
         this.combinationIndicator = combinationIndicator;
         this.image = image;
         this.name = "Small Center Box Pattern";
         lineToCheck = new ArrayList<>();
-        patternCells = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            patternCells.add(new ArrayList<>());
-
-            for (int j = 0; j < 5; j++) {
-                patternCells.get(i).add(false);
-            }
-        }
     }
 
+    /**
+     * Establece las posiciones específicas que deben verificarse para determinar
+     * si el patrón está completo.
+     * @param selectedPattern el patrón seleccionado.
+     * @param usedNumbers los números marcados en el tablero.
+     * @param cells la representación de las celdas del tablero.
+     */
     @Override
     public void setPositionsToCheck(int selectedPattern, ArrayList<Integer> usedNumbers, ArrayList<ArrayList<Integer>> cells) {
         lineToCheck.clear();
@@ -45,34 +47,15 @@ public class SmallCenterBoxPattern implements WinningPattern {
         System.out.println(lineToCheck);
     }
 
+
+    /**
+     * Verifica si el patrón está completo.
+     * @param usedNumbers los números marcados en el tablero.
+     * @return true si el patrón está completo.
+     */
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
         System.out.println(usedNumbers.containsAll(lineToCheck));
         return usedNumbers.containsAll(lineToCheck);
-    }
-
-    @Override
-    public int getTypeOfPatternIndicator() {
-        return this.typeOfPatternIndicator;
-    }
-
-    @Override
-    public ImageIcon getImage() {
-        return this.image;
-    }
-
-    @Override
-    public int getCombinationIndicator() {
-        return this.combinationIndicator;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ArrayList<ArrayList<Boolean>> getPatternCells() {
-        return patternCells;
     }
 }

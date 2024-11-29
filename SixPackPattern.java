@@ -1,33 +1,33 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
-public class SixPackPattern implements WinningPattern {
-    private final int typeOfPatternIndicator;
+/**
+ * Clase que representa el patrón "Six Pack".
+ */
+public class SixPackPattern extends Pattern {
     private ArrayList<Integer> lineToCheck;
-    private int combinationIndicator;
-    private ImageIcon image;
-    private String name;
-    private ArrayList<ArrayList<Boolean>> patternCells;
 
-
+    /**
+     * Constructor de la clase SixPackPattern.
+     * @param combinationIndicator el indicador de combinación específica.
+     * @param image la imagen asociada al patrón.
+     */
     public SixPackPattern(int combinationIndicator, ImageIcon image) {
+        super(combinationIndicator, image);
         this.typeOfPatternIndicator = 2;
         this.combinationIndicator = combinationIndicator;
         this.image = image;
         this.name = "Six Pack Pattern";
         lineToCheck = new ArrayList<>();
-        patternCells = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            patternCells.add(new ArrayList<>());
-
-            for (int j = 0; j < 5; j++) {
-                patternCells.get(i).add(false);
-            }
-        }
     }
 
+    /**
+     * Establece las posiciones específicas que deben verificarse para determinar
+     * si el patrón "Six Pack" está completo, dependiendo del patrón seleccionado.
+     * @param selectedPattern el patrón seleccionado por el usuario.
+     * @param usedNumbers los números marcados en el tablero.
+     * @param cells la representación de las celdas del tablero.
+     */
     @Override
     public void setPositionsToCheck(int selectedPattern, ArrayList<Integer> usedNumbers, ArrayList<ArrayList<Integer>> cells) {
         int firstColumn = 0;
@@ -72,6 +72,14 @@ public class SixPackPattern implements WinningPattern {
         }
     }
 
+    /**
+     * Establece las celdas a verificar para patrones 2x3.
+     *
+     * @param startingRow la fila inicial del patrón.
+     * @param firstRow la primera fila del patrón.
+     * @param secondRow la segunda fila del patrón.
+     * @param cells las celdas del tablero.
+     */
     public void setLineToCheckForFirstCase(int startingRow, int firstRow, int secondRow, ArrayList<ArrayList<Integer>> cells) {
         for (int i = startingRow; i < startingRow + 3; i++) {
             lineToCheck.add((cells.get(i)).get(firstRow));
@@ -82,6 +90,14 @@ public class SixPackPattern implements WinningPattern {
         }
     }
 
+    /**
+     * Establece las celdas a verificar para patrones 3x2.
+     * @param startingRow la fila inicial del patrón.
+     * @param firstColumn la primera columna del patrón.
+     * @param secondColumn la segunda columna del patrón.
+     * @param thirdColumn la tercera columna del patrón.
+     * @param cells las celdas del tablero.
+     */
     public void setLineToCheckForSecondCase(int startingRow, int firstColumn, int secondColumn, int thirdColumn, ArrayList<ArrayList<Integer>> cells) {
         for (int i = startingRow; i < startingRow + 2; i++) {
             lineToCheck.add((cells.get(i)).get(firstColumn));
@@ -94,34 +110,13 @@ public class SixPackPattern implements WinningPattern {
         }
     }
 
-
+    /**
+     * Verifica si el patrón stá completo.
+     * @param usedNumbers los números marcados en el tablero.
+     * @return true si el patrón está completo.
+     */
     @Override
     public boolean checkPattern(ArrayList<Integer> usedNumbers) {
         return usedNumbers.containsAll(lineToCheck);
-    }
-
-    @Override
-    public int getTypeOfPatternIndicator() {
-        return this.typeOfPatternIndicator;
-    }
-
-    @Override
-    public ImageIcon getImage() {
-        return this.image;
-    }
-
-    @Override
-    public int getCombinationIndicator() {
-        return this.combinationIndicator;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public ArrayList<ArrayList<Boolean>> getPatternCells() {
-        return patternCells;
     }
 }
